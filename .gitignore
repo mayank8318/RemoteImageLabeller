@@ -88,3 +88,4 @@ typings/
 .dynamodb/
 
 /.vs/
+__pycache__/
