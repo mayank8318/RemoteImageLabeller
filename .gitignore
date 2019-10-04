@@ -89,3 +89,4 @@ typings/
 
 /.vs/
 __pycache__/
+package-lock.json
