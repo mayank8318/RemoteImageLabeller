@@ -14,7 +14,11 @@ var userSchema = new mongoose.Schema({
         type: String,
         minlength: 6,
         trim: true
-    }
+    },
+	isAdmin: {
+		type: Boolean,
+		default: false
+	}
 });
 
 //passport plugin
