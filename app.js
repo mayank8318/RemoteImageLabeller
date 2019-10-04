@@ -37,6 +37,9 @@ passport_config.config_passport(passport);
 
 app.get("/", isLoggedIn, (req, res) => {
     // Main code here
+	res.render('main/sample',{
+		user: req.user
+	});
 });
 
 app.use(user);
