@@ -1,4 +1,4 @@
-const  env_vars = require('./Utils/Constants.js') ;
+const  env_vars = require('./utils/constants.js') ;
 const  express = require('express');
 const body_parser = require('body-parser');
 const _ = require('lodash');
@@ -7,6 +7,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const logger = require('morgan');
 const  passport_config = require('./config/passport_config');
 var flash = require('connect-flash');
+var isLoggedIn = require("./middleware/isLoggedIn");
 
 let user = require("./routes/user");
 
@@ -34,8 +35,8 @@ passport_config.config_passport(passport);
 
 // ROUTES
 
-app.get("/", (req, res) => {
-    res.redirect("/dashboard");
+app.get("/", isLoggedIn, (req, res) => {
+    // Main code here
 });
 
 app.use(user);
