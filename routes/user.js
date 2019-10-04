@@ -1,4 +1,4 @@
-var User = requrie("../models/User");
+var User = require("../models/User");
 var isLoggedIn = require("../middleware/isLoggedIn");
 var passportLocalMongoose = require('passport-local-mongoose');
 const passport = require('passport');
@@ -34,3 +34,5 @@ router.post('/register', (req, res) => {
             }
         });
 });
+
+module.exports = router;
