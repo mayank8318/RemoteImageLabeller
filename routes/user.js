@@ -35,4 +35,29 @@ router.post('/register', (req, res) => {
         });
 });
 
+// Login - GET
+router.get('/login', (req, res) => {
+    if (req.isAuthenticated()) {
+        res.redirect("/");
+    } else {
+        res.render("user/login");
+    }
+});
+
+
+// Login - POST
+router.post('/login', passport.authenticate('local', {
+    failureRedirect: '/login',
+    failureMessage: 'Wrong credentials'
+}), (req, res) => {
+    res.redirect('/');
+});
+
+
+// Logout - GET
+router.get('/logout', (req, res) => {
+    req.logout();
+    res.redirect("/");
+});
+
 module.exports = router;
