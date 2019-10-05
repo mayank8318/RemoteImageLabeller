@@ -28,7 +28,7 @@ app.use(passport.initialize());
 app.use(passport.session({}));
 
 app.set('view engine', 'ejs');
-app.use(express.static("public"));
+app.use(express.static(__dirname + "/public"));
 passport_config.config_passport(passport);
 // passport.use(new LocalStrategy())
 
