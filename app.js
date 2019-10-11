@@ -78,6 +78,10 @@ mysql.query("SELECT * FROM Images WHERE labelled_by is NULL", (err, rows, fields
 					c++;
 					assignedTable.get(req.user.username).lids.push(key);
 					assignedTable.get(req.user.username).labels.push('');
+					dbMemoryMap.set(key, {	
+						isAssigned: true,
+						isLabelled: false
+					});
 				}
 
 				if (c === maxAssigned)
