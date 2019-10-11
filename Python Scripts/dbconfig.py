@@ -4,7 +4,7 @@ import os
 def getDB():
 	db = mysql.connector.connect(
 		host='localhost',
-		user='mayank',
+		user='root',
 		passwd='mayankM1!'
 	)
 
