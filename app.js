@@ -22,6 +22,9 @@ let {
 }); */
 
 var dbMemoryMap = new Map();
+var assignedTable = new Map();
+var maxAssigned = 20;
+
 mysql.query("SELECT * FROM Images WHERE labelled_by is NULL", (err, rows, fields) => {
 	if (err)
 		throw err;
@@ -55,12 +58,35 @@ mysql.query("SELECT * FROM Images WHERE labelled_by is NULL", (err, rows, fields
 	app.set('view engine', 'ejs');
 	app.use(express.static(__dirname + "/public"));
 	passport_config.config_passport(passport);
-	// passport.use(new LocalStrategy())
-
 
 	// ROUTES
 
 	app.get("/", isLoggedIn, (req, res) => {
+
+		if (assignedTable.has(req.user.username)) {
+			// Has
+		} else {
+			assignedTable.set(req.user.username, {
+				lids: [],
+				labels: []
+			});
+
+			var c = 0;
+
+			for (var [key, value] of dbMemoryMap) {
+				if (value.isAssigned === false) {
+					c++;
+					assignedTable.get(req.user.username).lids.push(key);
+					assignedTable.get(req.user.username).labels.push('');
+				}
+
+				if (c === maxAssigned)
+					break;
+			}
+
+			console.log(assignedTable.get(req.user.username).lids);
+		}
+		
 		// Main code here
 		res.render('main/sample',{
 			user: req.user
