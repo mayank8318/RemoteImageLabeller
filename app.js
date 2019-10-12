@@ -112,6 +112,22 @@ mysql.query("SELECT * FROM Images WHERE labelled_by is NULL", (err, rows, fields
 		 res.redirect("/");
 	});
 
+	app.post("/nextClick", isLoggedIn, (req, res, next) => {
+		var x = assignedTable.get(req.user.username).cur;
+		assignedTable.get(req.user.username).labels[x] = req.body.labels;
+		x++;
+
+		if (x == maxAssigned)
+		{
+			// Check for all labelled, update as necessary
+		} else {
+			 
+		}
+
+		assignedTable.get(req.user.username).cur = x;
+		res.redirect("/");
+	});
+
 	app.use(user);
 
 	//404
