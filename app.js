@@ -21,6 +21,26 @@ let {
 	console.log(rows);
 }); */
 
+let app = express();
+app.use(body_parser.urlencoded({extended: false}));
+app.use(body_parser.json());
+app.use(logger('dev'));
+app.use(flash());
+app.use(require('express-session')({
+	secret: env_vars.secretCode,
+	resave: false,
+	saveUninitialized: false,
+	cookie: {_expires: 24 * 60 * 60 * 1000}
+}));
+
+app.use(passport.initialize());
+app.use(passport.session({}));
+
+app.set('view engine', 'ejs');
+app.use(express.static(__dirname + "/public"));
+app.use(express.static("C:\Users\mayan\BTP\Documentations_And_Credentials\sample-images" ));
+passport_config.config_passport(passport);
+
 var dbMemoryMap = new Map();
 var assignedTable = new Map();
 var maxAssigned = 20;
@@ -39,25 +59,6 @@ mysql.query("SELECT * FROM Images WHERE labelled_by is NULL", (err, rows, fields
 	/* for (var [key, value] of dbMemoryMap) {
 		console.log(key + ' = ' + value);
 	}*/
-
-	let app = express();
-	app.use(body_parser.urlencoded({extended: false}));
-	app.use(body_parser.json());
-	app.use(logger('dev'));
-	app.use(flash());
-	app.use(require('express-session')({
-		secret: env_vars.secretCode,
-		resave: false,
-		saveUninitialized: false,
-		cookie: {_expires: 24 * 60 * 60 * 1000}
-	}));
-
-	app.use(passport.initialize());
-	app.use(passport.session({}));
-
-	app.set('view engine', 'ejs');
-	app.use(express.static(__dirname + "/public"));
-	passport_config.config_passport(passport);
 
 	// ROUTES
 
@@ -88,12 +89,16 @@ mysql.query("SELECT * FROM Images WHERE labelled_by is NULL", (err, rows, fields
 					break;
 			}
 
-			console.log(assignedTable.get(req.user.username).lids);
+			// console.log(assignedTable.get(req.user.username).lids);
 		}
 		
 		// Main code here
-		res.render('main/sample',{
-			user: req.user
+		res.render('main/labeller',{
+			user: req.user,
+			cur: 0,
+			lids: assignedTable.get(req.user.username).lids,
+			labels: assignedTable.get(req.user.username).labels,
+			prePath: '../../BTP/Documentations_And_Credentials/sample-images/'
 		});
 	});
 
