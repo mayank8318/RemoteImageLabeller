@@ -69,7 +69,8 @@ mysql.query("SELECT * FROM Images WHERE labelled_by is NULL", (err, rows, fields
 		} else {
 			assignedTable.set(req.user.username, {
 				lids: [],
-				labels: []
+				labels: [],
+				cur: 0
 			});
 
 			var c = 0;
@@ -95,11 +96,20 @@ mysql.query("SELECT * FROM Images WHERE labelled_by is NULL", (err, rows, fields
 		// Main code here
 		res.render('main/labeller',{
 			user: req.user,
-			cur: 0,
+			cur: assignedTable.get(req.user.username).cur,
 			lids: assignedTable.get(req.user.username).lids,
 			labels: assignedTable.get(req.user.username).labels,
 			prePath: '../../BTP/Documentations_And_Credentials/sample-images/'
 		});
+	});
+
+	app.get("/prevClick", isLoggedIn, (req, res, next) => {
+		var x = assignedTable.get(req.user.username).cur - 1;
+		if (x == -1)
+			 x = 0;
+		 
+		 assignedTable.get(req.user.username).cur = x;
+		 res.redirect("/");
 	});
 
 	app.use(user);
