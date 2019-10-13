@@ -1,4 +1,4 @@
-var mysqlManager = require('mysql2')
+var mysqlManager = require('mysql')
 
 var mysql = mysqlManager.createConnection({
   host: 'localhost',

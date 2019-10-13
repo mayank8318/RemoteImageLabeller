@@ -8,6 +8,7 @@ const logger = require('morgan');
 const  passport_config = require('./config/passport_config');
 var flash = require('connect-flash');
 var isLoggedIn = require("./middleware/isLoggedIn");
+const util = require('util');
 
 let user = require("./routes/user");
 let {
@@ -43,9 +44,11 @@ passport_config.config_passport(passport);
 
 var dbMemoryMap = new Map();
 var assignedTable = new Map();
-var maxAssigned = 20;
+var maxAssigned = 2;
 
-mysql.query("SELECT * FROM Images WHERE labelled_by is NULL", (err, rows, fields) => {
+const query = util.promisify(mysql.query).bind(mysql);
+
+query("SELECT * FROM Images WHERE labelled_by is NULL", (err, rows, fields) => {
 	if (err)
 		throw err;
 
@@ -112,7 +115,7 @@ mysql.query("SELECT * FROM Images WHERE labelled_by is NULL", (err, rows, fields
 		 res.redirect("/");
 	});
 
-	app.post("/nextClick", isLoggedIn, (req, res, next) => {
+	app.post("/nextClick", isLoggedIn, async (req, res, next) => {
 		var x = assignedTable.get(req.user.username).cur;
 		assignedTable.get(req.user.username).labels[x] = req.body.labels;
 		x++;
@@ -120,11 +123,36 @@ mysql.query("SELECT * FROM Images WHERE labelled_by is NULL", (err, rows, fields
 		if (x == maxAssigned)
 		{
 			// Check for all labelled, update as necessary
+			var c = 0;
+			for (var l of assignedTable.get(req.user.username).labels) {
+				if (l !== '')
+					c++;
+			}
+
+			if (c === maxAssigned || c === assignedTable.get(req.user.username).labels.length) {
+				
+				for (var i = 0; i < assignedTable.get(req.user.username).labels.length; i++) {
+					await (async () => {
+						try {
+							const  rows = await query("UPDATE Images Set labels=?, labelled_by=? WHERE name=?",
+							[assignedTable.get(req.user.username).labels[i], req.user.username, assignedTable.get(req.user.username).lids[i]]);
+							dbMemoryMap.get(assignedTable.get(req.user.username).lids[i]).isLabelled = true;
+							console.log(dbMemoryMap.get(assignedTable.get(req.user.username).lids[i]).isLabelled);
+						} finally {
+							// conn.end();
+						}
+					})();
+				}
+
+				assignedTable.delete(req.user.username);
+			}
+
 		} else {
 			 
 		}
 
-		assignedTable.get(req.user.username).cur = x;
+		if (assignedTable.has(req.user.username))
+			assignedTable.get(req.user.username).cur = x;
 		res.redirect("/");
 	});
 
