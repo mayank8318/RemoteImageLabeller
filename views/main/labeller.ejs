@@ -9,7 +9,7 @@
 
   <div class="row">
     <div class="col-md-12">
-		<img src='<%= './sample-images/' + lids[cur] %>' style="max-width:60%;max-height:60%;">
+		<img src='<%= prePath + lids[cur] %>' style="max-width:60%;max-height:60%;">
 	</div>
   </div>
 
@@ -18,20 +18,29 @@
 	</div>
   </div>
 
-  <div class="row">
-	<div class="col-md-12">
-		<form class="form-inline" action="/nextClick" method="post">
-		<div class="input-group">
-		  <input type="text" class="form-control" placeholder="Labels" aria-describedby="basic-addon1" name="labels" value="<%= labels[cur] %>">
-		</div>
-		<div class="btn-group center" role="group" aria-label="...">
-		  <button onclick="prevClick()" type="button" class="btn btn-default">Previous</button>
-		  <button type="submit" class="btn btn-success">Next</button>
-		</div>
-	  </form>
+	<form action="/nextClick" method="post">
+	
+	<div class="form-group">
+		
+		<% labelOptions.forEach((label, i) => { %>
+			<% if (labels[cur].split(",").includes(label)) { %>
+				<div class="checkbox">
+				  <label><input name='labels' type="checkbox" value="<%= label %>"  checked> <%= label %> </label>
+				</div>
+			<% } else { %>
+				<div class="checkbox">
+				  <label><input name='labels' type="checkbox" value="<%= label %>" %> > <%= label %> </label>
+				</div>
+			<% } %>
+		<% }); %>
 	</div>
-	  	
-  </div>
+	
+	<div class="btn-group center" role="group" aria-label="...">
+		<button onclick="prevClick()" type="button" class="btn btn-default">Previous</button>
+		<button type="submit" class="btn btn-success">Next</button>
+	</div>
+	</form>
+	
 </div>
 
 <% include ../partials/footer %>

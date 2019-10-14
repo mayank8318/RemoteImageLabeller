@@ -102,7 +102,8 @@ query("SELECT * FROM Images WHERE labelled_by is NULL", (err, rows, fields) => {
 			cur: assignedTable.get(req.user.username).cur,
 			lids: assignedTable.get(req.user.username).lids,
 			labels: assignedTable.get(req.user.username).labels,
-			prePath: '../../BTP/Documentations_And_Credentials/sample-images/'
+			prePath: './sample-images/',
+			labelOptions: ['a', 'b', 'c']
 		});
 	});
 
@@ -116,8 +117,9 @@ query("SELECT * FROM Images WHERE labelled_by is NULL", (err, rows, fields) => {
 	});
 
 	app.post("/nextClick", isLoggedIn, async (req, res, next) => {
+		console.log(req.body);
 		var x = assignedTable.get(req.user.username).cur;
-		assignedTable.get(req.user.username).labels[x] = req.body.labels;
+		assignedTable.get(req.user.username).labels[x] = [].concat(req.body.labels).join(',');
 		x++;
 
 		if (x == maxAssigned)
