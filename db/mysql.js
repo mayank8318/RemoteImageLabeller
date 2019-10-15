@@ -3,7 +3,7 @@ var mysqlManager = require('mysql')
 var mysql = mysqlManager.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'mayankM1!',
+  password: 'toor',
   database: 'ImageLabeller'
 })
 
