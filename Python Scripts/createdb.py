@@ -28,7 +28,7 @@ def createDB():
 	filesList = [f for f in listdir(config['folderPath']) if isfile(join(config['folderPath'], f))]
 
 	for f in filesList:
-		cursor.execute("INSERT INTO `images` VALUES(%s, %s, %s)", (f, None, None))
+		cursor.execute("INSERT INTO `Images` VALUES(%s, %s, %s)", (f, None, None))
 	
 	db.commit()
 	print("\n")
