@@ -117,7 +117,6 @@ query("SELECT * FROM Images WHERE labelled_by is NULL", (err, rows, fields) => {
 	});
 
 	app.post("/nextClick", isLoggedIn, async (req, res, next) => {
-		console.log(req.body);
 		var x = assignedTable.get(req.user.username).cur;
 		assignedTable.get(req.user.username).labels[x] = [].concat(req.body.labels).join(',');
 		x++;
@@ -147,6 +146,8 @@ query("SELECT * FROM Images WHERE labelled_by is NULL", (err, rows, fields) => {
 				}
 
 				assignedTable.delete(req.user.username);
+			} else {
+				x--;
 			}
 
 		} else {
